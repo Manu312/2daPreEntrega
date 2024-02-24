@@ -49,9 +49,9 @@ class App{
     }
 
     initHandlerbars(){
-        this.App.engine('hbs', handlebars.engine());
+        this.App.engine('handlebars', handlebars.engine());
         this.App.set("views", path.join(__dirname, "views"));
-        this.App.set('view engine', 'hbs');
+        this.App.set('view engine', 'handlebars');
     }
 
     listen(){

@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 //COLOCAR CREDENCIALES MONGO ATLAS CONEXION
-const DB_HOST = process.env.DB_HOST || '';
-const DB_PORT = process.env.DB_PORT || '';
+const DB_HOST = process.env.DB_HOST || 'manumercado14';
+const DB_PORT = process.env.DB_PORT || 'j95E2DF4OnCKIp4E';
 const DB_NAME = process.env.DB_NAME || '@cluster0.cd4rqm0.mongodb.net/';
 const DB= process.env.DB || 'Ecommerce';
 

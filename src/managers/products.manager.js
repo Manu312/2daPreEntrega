@@ -2,9 +2,13 @@ const productsModel = require("../model/product.model");
 
 class ProductManager {
 
-    getAllProducts = async () =>{
+    getAllProducts = async (limit,page,sort,query) =>{
         try{
-            const products =  await productsModel.find({});
+            const queryTot = query ? query : {};
+            console.log("Query",query);
+            const skip =  (page - 1) * limit;
+            skip>0?skip:0;
+            const products =  await productsModel.find(query).lean().limit(limit).sort(sort).skip(skip).exec();
             return products;
         }catch(e){
             console.log("Error getting all products - products.manager", e);

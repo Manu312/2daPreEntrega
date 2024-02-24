@@ -12,7 +12,7 @@ class CartManager{
     };
     getCartById = async (id) =>{
         try{
-            const cart =  await cartsModel.findById({_id: id});
+            const cart =  await cartsModel.findById({_id: id}).lean();
             return cart;
         }catch(e){
             console.log("Error getting cart by id - carts.manager", e);
@@ -36,12 +36,12 @@ class CartManager{
     createCart = async (cart) =>{
         try{
             const products = await this.validateProducts(cart);
-            console.log("====================================");
-            console.log("Function create - productos validados", products);
-            const newCart = await cartsModel.create({products: products});
-            await cartsModel.findByIdAndUpdate({_id: newCart.id}, newCart, {new: true});
-            console.log("Function create",newCart);
-            return newCart;
+            if(products.length !== 0){
+                const newCart = await cartsModel.create({products: products});
+                await cartsModel.findByIdAndUpdate({_id: newCart.id}, newCart, {new: true});
+                console.log("Function create",newCart);
+                return newCart;
+            }
         }catch(e){
             console.log("Error creating cart - carts.manager", e);
         }
@@ -69,6 +69,25 @@ class CartManager{
             console.log("Error adding product to cart - carts.manager", e);
         }
         return null;
+    };
+    uppdateProductInCart = async (id, productId, product) =>{
+        try{
+            const cart = await cartsModel.findById({_id: id});
+            if(cart){
+                const oldProduct = await productsModel.findOneById({_id: productId});
+                if(!oldProduct){
+                    return null;
+                }
+                existProdutInCart = cart.products.find(p => p.product._id === productId);
+                if(existProdutInCart){
+                    existProdutInCart.product.stock = product.stock;
+                    const updatedCart = await cartsModel.findByIdAndUpdate(id, cart, {new: true});
+                    return updatedCart;
+                }
+            }
+        }catch(e){
+            console.log("Error updating product in cart - carts.manager", e);
+        }
     };
     getCartPriceTotal = async (id) =>{
         try{
@@ -116,6 +135,19 @@ class CartManager{
         }catch(e){
             console.log("Error deleting cart - carts.manager", e);
         }
+    }
+    deletAllProducts = async (id) =>{
+        try{
+            const cart = await cartsModel.findById({_id: id});
+            if(cart){
+                cart.products = [];
+                const updatedCart = await cartsModel.findByIdAndUpdate(id, cart, {new: true});
+                return updatedCart;
+            }
+        }catch(e){
+            console.log("Error deleting all products from cart - carts.manager", e);
+        }
+        return null;
     }
 }
 module.exports = CartManager;

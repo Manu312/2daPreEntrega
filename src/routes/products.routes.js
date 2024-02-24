@@ -27,10 +27,24 @@ class ProductsRoute {
         // GET all products
         this.router.get(`${this.path}`, async (req,res)=>{
             try{
-                const products =  await this.productManager.getAllProducts();
-                return res.status(200).json({ok:true, message: 'get all products',products: products});
+                const {limit = 10, page =1} =  req.query;
+                const {sort, query} = req.query;
+                const products =  await this.productManager.getAllProducts(limit,page,sort,query);
+                const {
+                    status,
+                    payload,
+                    totalPages,
+                    hasPrevPage,
+                    hasNextPage,
+                    prevPage,
+                    nextPage,
+                    prevLink,
+                    nextLink
+                } = await productsModel.paginate({}, {limit, page,lean : true});
+                console.log(products);
+                return res.render('products', {products: products, page, hasPrevPage, hasNextPage, prevPage, nextPage, prevLink, nextLink});
             }catch(e){
-                console.log(err);
+                console.log(e);
             }
             return res.status(500).json({ok:false,message: 'internal server error'});
         });

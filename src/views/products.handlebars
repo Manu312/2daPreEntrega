@@ -1,0 +1,21 @@
+<div>
+    <h1>Lista de productos</h1>
+    {{#each products}}
+        <p>title: {{this.title}}</p>
+        <p>price: {{this.price}}</p>
+        <p>stock: {{this.stock}}</p>
+        <p>description: {{this.description}}</p>
+        <p>code: {{this.code}}</p>
+    {{/each}}
+    <div>
+        <p>Page: {{page}}</p>
+    </div>
+    {{#if hasPrevPage}}
+        <p>Page prev</p>
+        <a href="api/v1/products?page={{prevPage}}">Anterior</a>
+    {{/if}}
+    {{#if hasNextPage}}
+        <p>Page Next</p>
+        <a href="api/v1/products?page={{nextPage}}">Siguiente</a>
+    {{/if}}
+</div>

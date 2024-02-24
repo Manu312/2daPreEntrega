@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const paginate = require('mongoose-paginate-v2');
 const collectionName = 'Carts';
 const cartSchema = new mongoose.Schema({
     products: { type: [
@@ -28,5 +28,6 @@ cartSchema.pre('find', function(){
     console.log('Cart pre find');
     this.populate('products.product');
 });
+cartSchema.plugin(paginate);
 const cartsModel = mongoose.model(collectionName, cartSchema);
 module.exports = cartsModel;
