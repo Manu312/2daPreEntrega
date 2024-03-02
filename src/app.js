@@ -4,6 +4,8 @@ const handlebars = require("express-handlebars");
 const path = require("path");
 const API_VERSION = "v1";
 const {mongoDBconnection} = require('./db/mongo.config');
+const cookiesParser = require('cookie-parser');
+const session = require('express-session');
 
 class App{
     App;
@@ -40,6 +42,12 @@ class App{
         this.App.use(express.json());
         this.App.use(express.urlencoded({ extended: true }));
         this.App.use('/static',express.static(`${__dirname}/static`));
+        this.App.use(cookiesParser());
+        this.App.use(session({
+            secret: 'mySecret',
+            resave: false,
+            saveUninitialized: true,
+        }));
     }
 
     initializeRoutes(routes){

@@ -1,0 +1,11 @@
+<!-- profile page -->
+<div>
+    <h2>Bienvenido {{user.first_name}}</h2>
+    <p>Usuario: {{user.email}}</p>
+    <!-- si tiene user.rol admin mostrar un texto -->
+    {{#if admin}}
+        Tiene rol de administrador
+    {{/if}}
+
+    <a href="http://localhost:8080/api/v1/session/logout">Cerrar sesión</a>
+</div>
