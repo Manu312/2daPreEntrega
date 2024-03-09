@@ -3,9 +3,12 @@ const displayRoutes = require("express-routemap");
 const handlebars = require("express-handlebars");
 const path = require("path");
 const API_VERSION = "v1";
-const {mongoDBconnection} = require('./db/mongo.config');
+const {mongoDBconnection,configConnection} = require('./db/mongo.config');
 const cookiesParser = require('cookie-parser');
 const session = require('express-session');
+const mongoStore = require("connect-mongo");
+const passport = require('passport');
+const initializePassport = require('../src/config/passport-config');
 
 class App{
     App;
@@ -17,7 +20,6 @@ class App{
         this.App = express();
         this.env = 'development';
         this.port = 8080;
-
         this.connectToDatabase();
         this.initializeMiddlewares();
         this.initializeRoutes(routes);
@@ -44,10 +46,18 @@ class App{
         this.App.use('/static',express.static(`${__dirname}/static`));
         this.App.use(cookiesParser());
         this.App.use(session({
-            secret: 'mySecret',
+            store: mongoStore.create({
+              mongoUrl: configConnection.url,
+              mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
+              ttl: 60 * 3600,
+            }),
+            secret: "secretSession",
             resave: false,
-            saveUninitialized: true,
-        }));
+            saveUninitialized: false,
+          })
+        );
+        initializePassport();
+        this.App.use(passport.initialize());
     }
 
     initializeRoutes(routes){
