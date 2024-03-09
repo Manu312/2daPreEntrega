@@ -78,34 +78,29 @@ class SessionRoute {
         this.router.post("/recover-psw", async (req, res) => {
             try {
               const { new_password, email } = req.body;
-              console.log(
-                "🚀 ~ file: session.routes.js:93 ~ router.post ~ req.body:",
-                req.body
+              console.log(req.body
               );
           
               const newPswHash = await createHash(new_password);
-              const user = await userModel.findOne({ email });
+              const user = await userModels.findOne({ email });
           
               if (!user) {
                 return res
                   .status(401)
-                  .json({ message: `credenciales invalidas o erroneas` });
+                  .json({ message: `credentials invalid` });
               }
           
-              const updateUser = await userModel.findByIdAndUpdate(user._id, {
+              const updateUser = await userModels.findByIdAndUpdate(user._id, {
                 password: newPswHash,
               });
           
               if (!updateUser) {
-                return res.json({ message: "problemas actualizando la contrasena" });
+                return res.json({ message: "problems uploading password" });
               }
           
               return res.render("login");
             } catch (error) {
-              console.log(
-                "🚀 ~ file: session.routes.js:114 ~ router.post ~ error:",
-                error
-              );
+              console.log(error);
             }
         });
                 
